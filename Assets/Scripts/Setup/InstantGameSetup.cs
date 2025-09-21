@@ -5,6 +5,7 @@ using UnityEditor.SceneManagement;
 using NeuralRink.Gameplay;
 using NeuralRink.Agents;
 using NeuralRink.Systems;
+using System.IO;
 
 namespace NeuralRink.Setup
 {
@@ -81,16 +82,16 @@ namespace NeuralRink.Setup
                 
                 // Success message
                 EditorUtility.DisplayDialog("🎉 Success!", 
-                    "Your Neural Rink game is now fully playable!\n\n" +
-                    "Next steps:\n" +
-                    "1. Open Play.unity scene\n" +
-                    "2. Press Play ▶️\n" +
-                    "3. Use WASD to move, mouse to aim and shoot!\n\n" +
-                    "Controls:\n" +
-                    "• WASD: Move player\n" +
-                    "• Mouse: Aim\n" +
-                    "• Click: Shoot\n" +
-                    "• R: Reset game", 
+                    "Your Neural Rink game is now fully playable!" +
+                    "\n\nNext steps:" +
+                    "\n1. Open Play.unity scene" +
+                    "\n2. Press Play ▶️" +
+                    "\n3. Use WASD to move, mouse to aim and shoot!" +
+                    "\n\nControls:" +
+                    "\n• WASD: Move player" +
+                    "\n• Mouse: Aim" +
+                    "\n• Click: Shoot" +
+                    "\n• R: Reset game", 
                     "Start Playing!");
                 
                 Debug.Log("✅ Complete playable game created successfully!");
@@ -458,4 +459,31 @@ namespace NeuralRink.Setup
                 File.Copy(bestModel, destPath, true);
                 AssetDatabase.Refresh();
                 
-                Debug.Log($"✅ Best ML model deployed: {bestModel} ({bestSize} bytes)");\n            }\n            else\n            {\n                Debug.LogWarning(\"No trained models found. AI will use simple fallback.\");\n            }\n        }\n        \n        /// <summary>\n        /// Configure final game settings.\n        /// </summary>\n        private void ConfigureGameSettings()\n        {\n            Debug.Log(\"⚙️ Configuring game settings...\");\n            \n            // Physics settings\n            Physics.defaultSolverIterations = 6;\n            Physics.defaultSolverVelocityIterations = 1;\n            Time.fixedDeltaTime = 0.02f;\n            \n            // Quality settings\n            Application.targetFrameRate = 60;\n            \n            Debug.Log(\"✅ Game settings configured\");\n        }\n    }\n}\n#endif
+                Debug.Log($"✅ Best ML model deployed: {bestModel} ({bestSize} bytes)");
+            }
+            else
+            {
+                Debug.LogWarning("No trained models found. AI will use simple fallback.");
+            }
+        }
+        
+        /// <summary>
+        /// Configure final game settings.
+        /// </summary>
+        private void ConfigureGameSettings()
+        {
+            Debug.Log("⚙️ Configuring game settings...");
+            
+            // Physics settings
+            Physics.defaultSolverIterations = 6;
+            Physics.defaultSolverVelocityIterations = 1;
+            Time.fixedDeltaTime = 0.02f;
+            
+            // Quality settings
+            Application.targetFrameRate = 60;
+            
+            Debug.Log("✅ Game settings configured");
+        }
+    }
+}
+#endif
