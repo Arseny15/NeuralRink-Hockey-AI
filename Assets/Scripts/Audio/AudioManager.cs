@@ -75,7 +75,7 @@ namespace NeuralRink.Audio
             // Find training switch
             if (trainingSwitch == null)
             {
-                trainingSwitch = FindObjectOfType<TrainingSwitch>();
+                trainingSwitch = FindFirstObjectByType<TrainingSwitch>();
             }
             
             // Create audio sources if not assigned

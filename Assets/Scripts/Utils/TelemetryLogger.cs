@@ -273,7 +273,7 @@ namespace NeuralRink.Utils
             }
             
             // Game state data
-            var salarySystem = FindObjectOfType<NeuralRink.Systems.SalarySystem>();
+            var salarySystem = FindFirstObjectByType<NeuralRink.Systems.SalarySystem>();
             if (salarySystem != null)
             {
                 var stats = salarySystem.GetPerformanceStats();
@@ -287,9 +287,9 @@ namespace NeuralRink.Utils
             // Performance data
             if (logPerformanceData)
             {
-                currentData.memoryUsage = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemory(false) / (1024f * 1024f); // MB
-                currentData.drawCalls = UnityEngine.Profiling.Profiler.GetRuntimeMemorySize(UnityEngine.RenderTexture.active) / 1024; // Approximate
-                currentData.physicsTime = UnityEngine.Profiling.Profiler.GetRuntimeMemorySize(UnityEngine.Physics.defaultPhysicsMaterial) / 1024; // Approximate
+                currentData.memoryUsage = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / (1024f * 1024f); // MB
+                currentData.drawCalls = 0; // Draw calls not available through simple API in Unity 6
+                currentData.physicsTime = Time.fixedDeltaTime; // Use fixed delta time as physics time approximation
             }
         }
         

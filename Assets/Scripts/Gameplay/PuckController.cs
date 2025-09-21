@@ -263,8 +263,28 @@ namespace NeuralRink.Gameplay
         private void OnGoalEvent()
         {
             // TODO: Notify game systems, update score, trigger goalie penalty
-            var goalieAgent = FindObjectOfType<NeuralRink.Agents.GoalieAgent>();
+            var goalieAgent = FindFirstObjectByType<NeuralRink.Agents.GoalieAgent>();
             goalieAgent?.OnGoalConceded();
         }
+        
+        /// <summary>
+        /// Shoot the puck in a specified direction with given impulse.
+        /// </summary>
+        public void Shoot(Vector3 direction, float impulse)
+        {
+            if (puckRigidbody == null) return;
+            
+            // Apply the shooting force
+            puckRigidbody.AddForce(direction.normalized * impulse, ForceMode.Impulse);
+            
+            // Clamp velocity to maximum
+            if (puckRigidbody.linearVelocity.magnitude > maxVelocity)
+            {
+                puckRigidbody.linearVelocity = puckRigidbody.linearVelocity.normalized * maxVelocity;
+            }
+            
+            Debug.Log($"Puck shot with impulse: {impulse}, direction: {direction}");
+        }
+        
     }
 }

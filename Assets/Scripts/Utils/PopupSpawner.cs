@@ -48,7 +48,7 @@ namespace NeuralRink.Utils
                 targetCamera = Camera.main;
                 if (targetCamera == null)
                 {
-                    targetCamera = FindObjectOfType<Camera>();
+                    targetCamera = FindFirstObjectByType<Camera>();
                 }
             }
             

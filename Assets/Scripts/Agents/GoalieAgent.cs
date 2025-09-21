@@ -30,6 +30,9 @@ namespace NeuralRink.Agents
         private bool mlAgentsAvailable = false;
         private object mlAgent = null;
         
+        // Events
+        public event System.Action OnConceded;
+        
         /// <summary>
         /// Initialize the goalie agent with ML-Agents detection.
         /// </summary>
@@ -210,6 +213,52 @@ namespace NeuralRink.Agents
         public string GetAIType()
         {
             return mlAgentsAvailable ? "ML-Agents (Advanced)" : "Simple AI (Fallback)";
+        }
+        
+        /// <summary>
+        /// Reset goalie position to specified position or initial position.
+        /// </summary>
+        public void ResetPosition(Vector3? posOverride = null)
+        {
+            var t = transform;
+            if (posOverride.HasValue) 
+            {
+                t.position = posOverride.Value;
+            }
+            else
+            {
+                t.position = initialPosition;
+            }
+            
+            // Reset velocities and state
+            if (goalieRigidbody != null)
+            {
+                goalieRigidbody.linearVelocity = Vector3.zero;
+                goalieRigidbody.angularVelocity = Vector3.zero;
+            }
+            
+            hasSaved = false;
+            hasConceded = false;
+        }
+        
+        /// <summary>
+        /// Handle goal conceded event - called when a goal is scored against this goalie.
+        /// </summary>
+        public void OnGoalConceded()
+        {
+            hasConceded = true;
+            
+            // Notify any listeners
+            OnConceded?.Invoke();
+            
+            // Apply penalty through salary system if available
+            var salarySystem = FindFirstObjectByType<NeuralRink.Systems.SalarySystem>();
+            if (salarySystem != null)
+            {
+                salarySystem.ProcessGoalConceded();
+            }
+            
+            Debug.Log("Goal conceded! Penalty applied.");
         }
     }
 }

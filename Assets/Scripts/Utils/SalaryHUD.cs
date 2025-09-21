@@ -60,12 +60,12 @@ namespace NeuralRink.Utils
             // Find system references if not assigned
             if (salarySystem == null)
             {
-                salarySystem = FindObjectOfType<SalarySystem>();
+                salarySystem = FindFirstObjectByType<SalarySystem>();
             }
             
             if (trainingSwitch == null)
             {
-                trainingSwitch = FindObjectOfType<TrainingSwitch>();
+                trainingSwitch = FindFirstObjectByType<TrainingSwitch>();
             }
             
             // Setup progress bars
@@ -224,7 +224,7 @@ namespace NeuralRink.Utils
         /// <summary>
         /// Handle salary change event.
         /// </summary>
-        private void OnSalaryChanged(float newSalary)
+        private void OnSalaryChanged(int newSalary)
         {
             UpdateSalaryDisplay();
         }
@@ -243,6 +243,7 @@ namespace NeuralRink.Utils
         private void OnBonusEarned(float bonusAmount)
         {
             // Could add special bonus animation here
+            UpdateSalaryDisplay();
             Debug.Log($"Bonus earned: ${bonusAmount:N0}");
         }
         
@@ -252,6 +253,7 @@ namespace NeuralRink.Utils
         private void OnPenaltyApplied(float penaltyAmount)
         {
             // Could add special penalty animation here
+            UpdateSalaryDisplay();
             Debug.Log($"Penalty applied: ${penaltyAmount:N0}");
         }
         
@@ -378,5 +380,6 @@ namespace NeuralRink.Utils
         {
             gameObject.SetActive(visible);
         }
+        
     }
 }

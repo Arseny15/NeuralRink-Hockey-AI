@@ -83,7 +83,7 @@ namespace NeuralRink.Gameplay
             // Find training switch
             if (trainingSwitch == null)
             {
-                trainingSwitch = FindObjectOfType<TrainingSwitch>();
+                trainingSwitch = FindFirstObjectByType<TrainingSwitch>();
                 if (trainingSwitch == null)
                 {
                     Debug.LogWarning("TrainingSwitch not found. Creating default configuration.");
@@ -94,7 +94,7 @@ namespace NeuralRink.Gameplay
             // Find or create salary system
             if (salarySystem == null)
             {
-                salarySystem = FindObjectOfType<SalarySystem>();
+                salarySystem = FindFirstObjectByType<SalarySystem>();
                 if (salarySystem == null)
                 {
                     GameObject salaryObj = new GameObject("SalarySystem");
@@ -105,7 +105,7 @@ namespace NeuralRink.Gameplay
             // Find or create rink setup
             if (rinkSetup == null)
             {
-                rinkSetup = FindObjectOfType<RinkSetup>();
+                rinkSetup = FindFirstObjectByType<RinkSetup>();
                 if (rinkSetup == null)
                 {
                     GameObject rinkObj = new GameObject("RinkSetup");
@@ -116,13 +116,13 @@ namespace NeuralRink.Gameplay
             // Find HUD
             if (gameHUD == null)
             {
-                gameHUD = FindObjectOfType<GameHUD>();
+                gameHUD = FindFirstObjectByType<GameHUD>();
             }
             
             // Find telemetry logger
             if (telemetryLogger == null)
             {
-                telemetryLogger = FindObjectOfType<TelemetryLogger>();
+                telemetryLogger = FindFirstObjectByType<TelemetryLogger>();
             }
         }
         

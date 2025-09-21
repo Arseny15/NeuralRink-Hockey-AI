@@ -33,7 +33,7 @@ namespace NeuralRink.Gameplay
             // Find GameDirector if not assigned
             if (director == null)
             {
-                director = FindObjectOfType<GameDirector>();
+                director = FindFirstObjectByType<GameDirector>();
                 
                 if (director == null)
                 {

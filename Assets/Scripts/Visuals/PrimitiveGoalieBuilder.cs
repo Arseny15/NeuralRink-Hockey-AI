@@ -33,7 +33,7 @@ namespace NeuralRink.Visuals
             // Find training switch if not assigned
             if (trainingSwitch == null)
             {
-                trainingSwitch = FindObjectOfType<NeuralRink.Systems.TrainingSwitch>();
+                trainingSwitch = FindFirstObjectByType<NeuralRink.Systems.TrainingSwitch>();
             }
 
             // Check if we should disable visuals in training

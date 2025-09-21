@@ -57,9 +57,9 @@ namespace NeuralRink.UI
         /// </summary>
         private void FindRequiredComponents()
         {
-            salarySystem = FindObjectOfType<SalarySystem>();
-            trainingSwitch = FindObjectOfType<TrainingSwitch>();
-            playerController = FindObjectOfType<NeuralRink.Gameplay.PlayerController>();
+            salarySystem = FindFirstObjectByType<SalarySystem>();
+            trainingSwitch = FindFirstObjectByType<TrainingSwitch>();
+            playerController = FindFirstObjectByType<NeuralRink.Gameplay.PlayerController>();
             
             // Subscribe to salary system events
             if (salarySystem != null)
@@ -237,7 +237,7 @@ namespace NeuralRink.UI
         /// <summary>
         /// Handle salary change event.
         /// </summary>
-        private void OnSalaryChanged(float newSalary)
+        private void OnSalaryChanged(int newSalary)
         {
             if (salaryText != null)
             {

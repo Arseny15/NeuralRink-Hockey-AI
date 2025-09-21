@@ -65,7 +65,7 @@ namespace NeuralRink.Effects
             // Find training switch
             if (trainingSwitch == null)
             {
-                trainingSwitch = FindObjectOfType<TrainingSwitch>();
+                trainingSwitch = FindFirstObjectByType<TrainingSwitch>();
             }
             
             // Create default effects if not assigned

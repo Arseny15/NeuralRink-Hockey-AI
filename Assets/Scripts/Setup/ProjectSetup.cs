@@ -1,5 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.IO;
 
 namespace NeuralRink.Setup
@@ -124,10 +126,12 @@ namespace NeuralRink.Setup
             
             // Create Prefabs directory if it doesn't exist
             string prefabsPath = "Assets/Prefabs";
+#if UNITY_EDITOR
             if (!AssetDatabase.IsValidFolder(prefabsPath))
             {
                 AssetDatabase.CreateFolder("Assets", "Prefabs");
             }
+#endif
             
             // Create default player prefab
             CreatePlayerPrefab();
@@ -141,8 +145,10 @@ namespace NeuralRink.Setup
             // Create default goal prefab
             CreateGoalPrefab();
             
+#if UNITY_EDITOR
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+#endif
         }
         
         /// <summary>
@@ -174,7 +180,9 @@ namespace NeuralRink.Setup
             
             // Save as prefab
             string prefabPath = "Assets/Prefabs/Player.prefab";
+#if UNITY_EDITOR
             PrefabUtility.SaveAsPrefabAsset(player, prefabPath);
+#endif
             DestroyImmediate(player);
             
             Debug.Log($"Created player prefab: {prefabPath}");
@@ -210,7 +218,9 @@ namespace NeuralRink.Setup
             
             // Save as prefab
             string prefabPath = "Assets/Prefabs/Goalie.prefab";
+#if UNITY_EDITOR
             PrefabUtility.SaveAsPrefabAsset(goalie, prefabPath);
+#endif
             DestroyImmediate(goalie);
             
             Debug.Log($"Created goalie prefab: {prefabPath}");
@@ -234,10 +244,11 @@ namespace NeuralRink.Setup
             rb.mass = 0.17f; // Standard hockey puck mass
             rb.useGravity = false;
             
-            // Add collider
-            CylinderCollider collider = puck.AddComponent<CylinderCollider>();
+            // Add collider (using CapsuleCollider as CylinderCollider doesn't exist in Unity 6)
+            CapsuleCollider collider = puck.AddComponent<CapsuleCollider>();
             collider.height = 0.2f;
             collider.radius = 0.5f;
+            collider.direction = 1; // Y-axis, approximates a cylinder
             collider.isTrigger = true;
             
             // Add puck controller
@@ -245,7 +256,9 @@ namespace NeuralRink.Setup
             
             // Save as prefab
             string prefabPath = "Assets/Prefabs/Puck.prefab";
+#if UNITY_EDITOR
             PrefabUtility.SaveAsPrefabAsset(puck, prefabPath);
+#endif
             DestroyImmediate(puck);
             
             Debug.Log($"Created puck prefab: {prefabPath}");
@@ -284,7 +297,9 @@ namespace NeuralRink.Setup
             
             // Save as prefab
             string prefabPath = "Assets/Prefabs/Goal.prefab";
+#if UNITY_EDITOR
             PrefabUtility.SaveAsPrefabAsset(goal, prefabPath);
+#endif
             DestroyImmediate(goal);
             
             Debug.Log($"Created goal prefab: {prefabPath}");
@@ -318,16 +333,20 @@ namespace NeuralRink.Setup
             
             // Create ScriptableObjects directory if it doesn't exist
             string soPath = "Assets/ScriptableObjects";
+#if UNITY_EDITOR
             if (!AssetDatabase.IsValidFolder(soPath))
             {
                 AssetDatabase.CreateFolder("Assets", "ScriptableObjects");
             }
+#endif
             
             // Create default TrainingSwitch
             CreateDefaultTrainingSwitch();
             
+#if UNITY_EDITOR
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+#endif
         }
         
         /// <summary>
@@ -344,7 +363,9 @@ namespace NeuralRink.Setup
                 // Set default values
                 // Note: These would be set in the Inspector, but we can set some defaults here
                 
+#if UNITY_EDITOR
                 AssetDatabase.CreateAsset(trainingSwitch, trainingSwitchPath);
+#endif
                 Debug.Log($"Created default TrainingSwitch: {trainingSwitchPath}");
             }
             else
@@ -361,19 +382,19 @@ namespace NeuralRink.Setup
             bool isValid = true;
             
             // Check for required scripts
-            if (FindObjectOfType<NeuralRink.Agents.GoalieAgent>() == null)
+            if (FindFirstObjectByType<NeuralRink.Agents.GoalieAgent>() == null)
             {
                 Debug.LogError("GoalieAgent not found in scene!");
                 isValid = false;
             }
             
-            if (FindObjectOfType<NeuralRink.Gameplay.PlayerController>() == null)
+            if (FindFirstObjectByType<NeuralRink.Gameplay.PlayerController>() == null)
             {
                 Debug.LogError("PlayerController not found in scene!");
                 isValid = false;
             }
             
-            if (FindObjectOfType<NeuralRink.Gameplay.PuckController>() == null)
+            if (FindFirstObjectByType<NeuralRink.Gameplay.PuckController>() == null)
             {
                 Debug.LogError("PuckController not found in scene!");
                 isValid = false;

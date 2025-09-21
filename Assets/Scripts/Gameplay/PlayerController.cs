@@ -3,254 +3,138 @@ using UnityEngine.InputSystem;
 
 namespace NeuralRink.Gameplay
 {
-    /// <summary>
-    /// Human-controlled skater player controller using Unity Input System.
-    /// Handles movement, shooting, and interaction with the puck.
-    /// </summary>
-    public class PlayerController : MonoBehaviour
+    [RequireComponent(typeof(Rigidbody))]
+    public sealed class PlayerController : MonoBehaviour
     {
-        [Header("Movement Configuration")]
-        [SerializeField] private float moveSpeed = 8f;
-        [SerializeField] private float rotationSpeed = 180f;
-        [SerializeField] private float maxSpeed = 12f;
-        
-        [Header("Shooting Configuration")]
-        [SerializeField] private float shotPower = 15f;
-        [SerializeField] private float shotCooldown = 1f;
-        [SerializeField] private Transform shotPoint;
-        [SerializeField] private LayerMask puckLayer = 1;
-        
-        [Header("Input Configuration")]
-        [SerializeField] private InputActionAsset inputActions;
-        [SerializeField] private string moveActionMap = "Player";
-        [SerializeField] private string moveAction = "Move";
-        [SerializeField] private string shootAction = "Shoot";
-        [SerializeField] private string aimAction = "Aim";
-        
-        private InputAction moveInput;
-        private InputAction shootInput;
-        private InputAction aimInput;
-        
-        private Rigidbody playerRigidbody;
-        private Camera playerCamera;
-        private Vector3 moveInputVector;
-        private Vector2 aimInputVector;
-        private bool canShoot = true;
-        private float lastShotTime;
-        
-        /// <summary>
-        /// Initialize player controller with input system and physics setup.
-        /// </summary>
-        private void Awake()
+        [Header("Input")]
+        public InputActionReference moveAction;   // Vector2
+        public InputActionReference aimAction;    // Vector2 (mouse delta or stick)
+        public InputActionReference shootAction;  // Button
+        public InputActionReference dekeAction;   // Button
+
+        [Header("Movement")]
+        public float maxSpeed = 7.5f;
+        public float acceleration = 40f;
+        public float friction = 8f;
+
+        [Header("Shot")]
+        public float minCharge = 0.2f;
+        public float maxCharge = 1.0f;
+        public float maxShotImpulse = 18f;
+
+        [Header("Deke")]
+        public float dekeForce = 8f;
+        public float dekeCooldown = 1.0f;
+
+        [Header("Refs")]
+        public PuckController puck;
+
+        Rigidbody _rb;
+        float _chargeStart = -1f;
+        float _dekeReadyAt = 0f;
+
+        void Awake()
         {
-            playerRigidbody = GetComponent<Rigidbody>();
-            if (playerRigidbody == null)
+            _rb = GetComponent<Rigidbody>();
+            _rb.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        void OnEnable()
+        {
+            moveAction?.action?.Enable();
+            aimAction?.action?.Enable();
+            shootAction?.action?.Enable();
+            dekeAction?.action?.Enable();
+
+            if (shootAction != null)
             {
-                playerRigidbody = gameObject.AddComponent<Rigidbody>();
+                shootAction.action.started += OnShootStarted;
+                shootAction.action.canceled += OnShootReleased;
             }
-            
-            playerCamera = Camera.main;
-            if (playerCamera == null)
+            if (dekeAction != null)
             {
-                playerCamera = FindObjectOfType<Camera>();
+                dekeAction.action.performed += OnDeke;
             }
-            
-            SetupInputActions();
+        }
+
+        void OnDisable()
+        {
+            if (shootAction != null)
+            {
+                shootAction.action.started -= OnShootStarted;
+                shootAction.action.canceled -= OnShootReleased;
+            }
+            if (dekeAction != null)
+            {
+                dekeAction.action.performed -= OnDeke;
+            }
+        }
+
+        void FixedUpdate()
+        {
+            Vector2 move = moveAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
+            var desiredVel = new Vector3(move.x, 0f, move.y) * maxSpeed;
+            Vector3 vel = _rb.linearVelocity;
+
+            // Accelerate toward desired velocity
+            Vector3 dv = Vector3.ClampMagnitude(desiredVel - vel, acceleration * Time.fixedDeltaTime);
+            _rb.linearVelocity = vel + dv;
+
+            // Simple friction to settle
+            _rb.linearVelocity = Vector3.MoveTowards(_rb.linearVelocity, Vector3.zero, friction * Time.fixedDeltaTime);
+        }
+
+        void OnShootStarted(InputAction.CallbackContext _)
+        {
+            _chargeStart = Time.time;
+        }
+
+        void OnShootReleased(InputAction.CallbackContext _)
+        {
+            if (puck == null) return;
+            if (_chargeStart < 0f) return;
+
+            float held = Mathf.Clamp(Time.time - _chargeStart, minCharge, maxCharge);
+            float power01 = Mathf.InverseLerp(minCharge, maxCharge, held);
+
+            Vector2 aim = aimAction?.action?.ReadValue<Vector2>() ?? Vector2.zero;
+            Vector3 dir = (aim.sqrMagnitude > 0.0001f)
+                ? new Vector3(aim.x, 0f, aim.y).normalized
+                : transform.forward;
+
+            puck.Shoot(dir, power01 * maxShotImpulse);
+            _chargeStart = -1f;
+        }
+
+        void OnDeke(InputAction.CallbackContext _)
+        {
+            if (Time.time < _dekeReadyAt) return;
+            Vector3 lateral = Vector3.Cross(Vector3.up, transform.forward).normalized * (Random.value < 0.5f ? -1f : 1f);
+            _rb.AddForce(lateral * dekeForce, ForceMode.VelocityChange);
+            _dekeReadyAt = Time.time + dekeCooldown;
         }
         
         /// <summary>
-        /// Set up Unity Input System actions for player control.
-        /// </summary>
-        private void SetupInputActions()
-        {
-            if (inputActions != null)
-            {
-                moveInput = inputActions[moveActionMap][moveAction];
-                shootInput = inputActions[moveActionMap][shootAction];
-                aimInput = inputActions[moveActionMap][aimAction];
-                
-                shootInput.performed += OnShootInput;
-            }
-        }
-        
-        /// <summary>
-        /// Enable input actions when object becomes active.
-        /// </summary>
-        private void OnEnable()
-        {
-            moveInput?.Enable();
-            shootInput?.Enable();
-            aimInput?.Enable();
-        }
-        
-        /// <summary>
-        /// Disable input actions when object becomes inactive.
-        /// </summary>
-        private void OnDisable()
-        {
-            moveInput?.Disable();
-            shootInput?.Disable();
-            aimInput?.Disable();
-        }
-        
-        /// <summary>
-        /// Handle player input and movement in FixedUpdate for physics consistency.
-        /// </summary>
-        private void FixedUpdate()
-        {
-            HandleMovement();
-            HandleRotation();
-        }
-        
-        /// <summary>
-        /// Process movement input and apply physics-based movement.
-        /// </summary>
-        private void HandleMovement()
-        {
-            if (moveInput != null)
-            {
-                Vector2 moveInput2D = moveInput.ReadValue<Vector2>();
-                moveInputVector = new Vector3(moveInput2D.x, 0, moveInput2D.y);
-            }
-            
-            // Apply movement force
-            Vector3 moveForce = moveInputVector * moveSpeed;
-            playerRigidbody.AddForce(moveForce, ForceMode.Acceleration);
-            
-            // Limit maximum speed
-            if (playerRigidbody.linearVelocity.magnitude > maxSpeed)
-            {
-                playerRigidbody.linearVelocity = playerRigidbody.linearVelocity.normalized * maxSpeed;
-            }
-        }
-        
-        /// <summary>
-        /// Handle player rotation based on movement direction and aim input.
-        /// </summary>
-        private void HandleRotation()
-        {
-            if (aimInput != null)
-            {
-                aimInputVector = aimInput.ReadValue<Vector2>();
-            }
-            
-            Vector3 targetDirection;
-            
-            // Prioritize aim input over movement direction
-            if (aimInputVector.magnitude > 0.1f && playerCamera != null)
-            {
-                // Convert screen space aim to world space
-                Vector3 screenAim = new Vector3(aimInputVector.x, 0, aimInputVector.y);
-                targetDirection = playerCamera.transform.TransformDirection(screenAim);
-                targetDirection.y = 0;
-            }
-            else if (moveInputVector.magnitude > 0.1f)
-            {
-                // Use movement direction for rotation
-                targetDirection = moveInputVector;
-            }
-            else
-            {
-                return; // No rotation needed
-            }
-            
-            // Apply rotation
-            if (targetDirection.magnitude > 0.1f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(targetDirection.normalized);
-                transform.rotation = Quaternion.RotateTowards(
-                    transform.rotation, 
-                    targetRotation, 
-                    rotationSpeed * Time.fixedDeltaTime
-                );
-            }
-        }
-        
-        /// <summary>
-        /// Handle shoot input action.
-        /// </summary>
-        private void OnShootInput(InputAction.CallbackContext context)
-        {
-            if (canShoot && Time.time - lastShotTime >= shotCooldown)
-            {
-                AttemptShot();
-            }
-        }
-        
-        /// <summary>
-        /// Attempt to shoot the puck with physics-based force.
-        /// </summary>
-        private void AttemptShot()
-        {
-            // Find nearby puck
-            Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, 2f, puckLayer);
-            
-            foreach (Collider obj in nearbyObjects)
-            {
-                if (obj.CompareTag("Puck"))
-                {
-                    Rigidbody puckRigidbody = obj.GetComponent<Rigidbody>();
-                    if (puckRigidbody != null)
-                    {
-                        // Calculate shot direction
-                        Vector3 shotDirection = transform.forward;
-                        
-                        // Apply shot force to puck
-                        puckRigidbody.AddForce(shotDirection * shotPower, ForceMode.Impulse);
-                        
-                        // Update shot timing
-                        lastShotTime = Time.time;
-                        
-                        // Notify systems about shot
-                        OnShotFired();
-                        
-                        break;
-                    }
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Called when player successfully shoots the puck.
-        /// </summary>
-        private void OnShotFired()
-        {
-            // TODO: Add shot effects, sound, telemetry
-            Debug.Log("Player shot fired!");
-        }
-        
-        /// <summary>
-        /// Get current player speed for UI display.
-        /// </summary>
-        public float GetCurrentSpeed()
-        {
-            return playerRigidbody.linearVelocity.magnitude;
-        }
-        
-        /// <summary>
-        /// Check if player can shoot (cooldown check).
+        /// Check if player can shoot (for compatibility with existing telemetry code)
         /// </summary>
         public bool CanShoot()
         {
-            return canShoot && Time.time - lastShotTime >= shotCooldown;
+            return _chargeStart < 0f && puck != null;
         }
         
         /// <summary>
-        /// Reset player position and state.
+        /// Reset player to initial state
         /// </summary>
         public void ResetPlayer()
         {
-            playerRigidbody.linearVelocity = Vector3.zero;
-            playerRigidbody.angularVelocity = Vector3.zero;
-            lastShotTime = 0f;
-        }
-        
-        /// <summary>
-        /// Set shot power multiplier for training scenarios.
-        /// </summary>
-        public void SetShotPowerMultiplier(float multiplier)
-        {
-            shotPower = 15f * multiplier;
+            if (_rb != null)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
+            }
+            
+            _chargeStart = -1f;
+            _dekeReadyAt = 0f;
         }
     }
 }

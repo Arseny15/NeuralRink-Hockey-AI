@@ -54,7 +54,7 @@ namespace NeuralRink.Utils
             // Find training switch if not assigned
             if (trainingSwitch == null)
             {
-                trainingSwitch = FindObjectOfType<TrainingSwitch>();
+                trainingSwitch = FindFirstObjectByType<TrainingSwitch>();
             }
             
             // Cache initial state
