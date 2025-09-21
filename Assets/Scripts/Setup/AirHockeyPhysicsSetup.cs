@@ -224,7 +224,7 @@ namespace NeuralRink.Setup
             
             // Configure rigidbody for air hockey physics
             rb.mass = 1f;
-            rb.useGravity = false; // Air hockey pucks float
+            rb.useGravity = false;
             rb.constraints = RigidbodyConstraints.FreezePositionY;
             
             // Setup collider with physics material
@@ -243,16 +243,144 @@ namespace NeuralRink.Setup
             // Set tag
             puck.tag = "Puck";
             
-            // Enable air hockey physics in PuckController
-            var puckController = puck.GetComponent<PuckController>();
-            if (puckController != null)
+            Debug.Log($"✅ Configured puck: {puck.name}");
+        }
+        
+        /// <summary>
+        /// Setup wall objects with proper physics materials.
+        /// </summary>
+        private void SetupWalls()
+        {
+            if (walls == null) return;
+            
+            foreach (GameObject wall in walls)
             {
-                var field = typeof(PuckController).GetField("useAirHockeyPhysics", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (field != null)
+                if (wall == null) continue;
+                
+                // Setup collider with physics material
+                Collider col = wall.GetComponent<Collider>();
+                if (col != null && wallMaterial != null)
                 {
-                    field.SetValue(puckController, true);
+                    col.material = wallMaterial;
                 }
+                
+                // Set tag
+                wall.tag = "Wall";
+                
+                Debug.Log($"✅ Configured wall: {wall.name}");
+            }
+        }
+        
+        /// <summary>
+        /// Setup ice surface with air hockey texture.
+        /// </summary>
+        private void SetupIceSurface()
+        {
+            if (iceSurface == null) return;
+            
+            // Load air hockey texture
+            if (airHockeyTexture == null)
+            {
+                airHockeyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Materials/air_hockey_full.png");
             }
             
-            Debug.Log($"✅ Configured puck: {puck.name}");\n        }\n        \n        /// <summary>\n        /// Setup wall objects with proper physics materials.\n        /// </summary>\n        private void SetupWalls()\n        {\n            if (walls == null) return;\n            \n            foreach (GameObject wall in walls)\n            {\n                if (wall == null) continue;\n                \n                // Setup collider with physics material\n                Collider col = wall.GetComponent<Collider>();\n                if (col != null && wallMaterial != null)\n                {\n                    col.material = wallMaterial;\n                }\n                \n                // Set tag\n                wall.tag = \"Wall\";\n                \n                Debug.Log($\"✅ Configured wall: {wall.name}\");\n            }\n        }\n        \n        /// <summary>\n        /// Setup ice surface with air hockey texture.\n        /// </summary>\n        private void SetupIceSurface()\n        {\n            if (iceSurface == null) return;\n            \n            // Load air hockey texture\n            if (airHockeyTexture == null)\n            {\n                airHockeyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(\"Assets/Materials/air_hockey_full.png\");\n            }\n            \n            if (airHockeyTexture != null)\n            {\n                // Create or update ice material\n                Renderer renderer = iceSurface.GetComponent<Renderer>();\n                if (renderer != null)\n                {\n                    Material iceMaterial = new Material(Shader.Find(\"Standard\"));\n                    iceMaterial.name = \"Ice Surface\";\n                    iceMaterial.mainTexture = airHockeyTexture;\n                    iceMaterial.color = Color.white;\n                    iceMaterial.SetFloat(\"_Smoothness\", 0.9f);\n                    iceMaterial.SetFloat(\"_Metallic\", 0.1f);\n                    \n                    renderer.material = iceMaterial;\n                    \n                    // Save material as asset\n                    AssetDatabase.CreateAsset(iceMaterial, \"Assets/Materials/IceSurface.mat\");\n                }\n                \n                Debug.Log($\"✅ Configured ice surface: {iceSurface.name}\");\n            }\n            else\n            {\n                Debug.LogWarning(\"Air hockey texture not found at Assets/Materials/air_hockey_full.png\");\n            }\n        }\n        \n        /// <summary>\n        /// Auto-find game objects in the scene.\n        /// </summary>\n        [ContextMenu(\"Auto-Find Game Objects\")]\n        public void AutoFindGameObjects()\n        {\n            // Find players\n            var playerObjects = GameObject.FindGameObjectsWithTag(\"Player\");\n            if (playerObjects.Length > 0)\n            {\n                players = playerObjects;\n                Debug.Log($\"Found {players.Length} player objects\");\n            }\n            \n            // Find goalkeeper\n            var goalkeepers = GameObject.FindGameObjectsWithTag(\"Goalkeeper\");\n            if (goalkeepers.Length > 0)\n            {\n                goalkeeper = goalkeepers[0];\n                Debug.Log($\"Found goalkeeper: {goalkeeper.name}\");\n            }\n            \n            // Find puck\n            var pucks = GameObject.FindGameObjectsWithTag(\"Puck\");\n            if (pucks.Length > 0)\n            {\n                puck = pucks[0];\n                Debug.Log($\"Found puck: {puck.name}\");\n            }\n            \n            // Find walls\n            var wallObjects = GameObject.FindGameObjectsWithTag(\"Wall\");\n            if (wallObjects.Length > 0)\n            {\n                walls = wallObjects;\n                Debug.Log($\"Found {walls.Length} wall objects\");\n            }\n            \n            // Find ice surface (look for large flat object)\n            var renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);\n            foreach (var renderer in renderers)\n            {\n                if (renderer.bounds.size.x > 10f && renderer.bounds.size.z > 10f && renderer.bounds.size.y < 2f)\n                {\n                    iceSurface = renderer.gameObject;\n                    Debug.Log($\"Found ice surface: {iceSurface.name}\");\n                    break;\n                }\n            }\n        }\n        \n        /// <summary>\n        /// Load physics materials from air hockey assets.\n        /// </summary>\n        [ContextMenu(\"Load Air Hockey Physics Materials\")]\n        public void LoadPhysicsMaterials()\n        {\n            playerMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(\"Assets/Physics Materials/Handle.physicMaterial\");\n            goalkeeperMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(\"Assets/Physics Materials/Handle.physicMaterial\");\n            puckMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(\"Assets/Physics Materials/Puck.physicMaterial\");\n            wallMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(\"Assets/Physics Materials/Wall.physicMaterial\");\n            \n            Debug.Log(\"✅ Loaded air hockey physics materials\");\n        }\n    }\n}\n#else\nnamespace NeuralRink.Setup\n{\n    // Runtime stub\n    public class AirHockeyPhysicsSetup : MonoBehaviour { }\n}\n#endif
+            if (airHockeyTexture != null)
+            {
+                // Create or update ice material
+                Renderer renderer = iceSurface.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    Material iceMaterial = new Material(Shader.Find("Standard"));
+                    iceMaterial.name = "Ice Surface";
+                    iceMaterial.mainTexture = airHockeyTexture;
+                    iceMaterial.color = Color.white;
+                    iceMaterial.SetFloat("_Smoothness", 0.9f);
+                    iceMaterial.SetFloat("_Metallic", 0.1f);
+                    
+                    renderer.material = iceMaterial;
+                    
+                    // Save material as asset
+                    AssetDatabase.CreateAsset(iceMaterial, "Assets/Materials/IceSurface.mat");
+                }
+                
+                Debug.Log($"✅ Configured ice surface: {iceSurface.name}");
+            }
+            else
+            {
+                Debug.LogWarning("Air hockey texture not found at Assets/Materials/air_hockey_full.png");
+            }
+        }
+        
+        /// <summary>
+        /// Auto-find game objects in the scene.
+        /// </summary>
+        [ContextMenu("Auto-Find Game Objects")]
+        public void AutoFindGameObjects()
+        {
+            // Find players
+            var playerObjects = GameObject.FindGameObjectsWithTag("Player");
+            if (playerObjects.Length > 0)
+            {
+                players = playerObjects;
+                Debug.Log($"Found {players.Length} player objects");
+            }
+            
+            // Find goalkeeper
+            var goalkeepers = GameObject.FindGameObjectsWithTag("Goalkeeper");
+            if (goalkeepers.Length > 0)
+            {
+                goalkeeper = goalkeepers[0];
+                Debug.Log($"Found goalkeeper: {goalkeeper.name}");
+            }
+            
+            // Find puck
+            var pucks = GameObject.FindGameObjectsWithTag("Puck");
+            if (pucks.Length > 0)
+            {
+                puck = pucks[0];
+                Debug.Log($"Found puck: {puck.name}");
+            }
+            
+            // Find walls
+            var wallObjects = GameObject.FindGameObjectsWithTag("Wall");
+            if (wallObjects.Length > 0)
+            {
+                walls = wallObjects;
+                Debug.Log($"Found {walls.Length} wall objects");
+            }
+            
+            // Find ice surface (look for large flat object)
+            var renderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+            foreach (var renderer in renderers)
+            {
+                if (renderer.bounds.size.x > 10f && renderer.bounds.size.z > 10f && renderer.bounds.size.y < 2f)
+                {
+                    iceSurface = renderer.gameObject;
+                    Debug.Log($"Found ice surface: {iceSurface.name}");
+                    break;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Load physics materials from air hockey assets.
+        /// </summary>
+        [ContextMenu("Load Air Hockey Physics Materials")]
+        public void LoadPhysicsMaterials()
+        {
+            playerMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>("Assets/Physics Materials/Handle.physicMaterial");
+            goalkeeperMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>("Assets/Physics Materials/Handle.physicMaterial");
+            puckMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>("Assets/Physics Materials/Puck.physicMaterial");
+            wallMaterial = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>("Assets/Physics Materials/Wall.physicMaterial");
+            
+            Debug.Log("✅ Loaded air hockey physics materials");
+        }
+    }
+}
+#else
+namespace NeuralRink.Setup
+{
+    // Runtime stub
+    public class AirHockeyPhysicsSetup : MonoBehaviour { }
+}
+#endif
