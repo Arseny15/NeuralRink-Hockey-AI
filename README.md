@@ -1,4 +1,4 @@
-# 🏒 Neural Rink - AI Hockey Game
+# 🏒 Neural Rink - AI Hockey Game -> IN PROGRESS
 
 A 1v1 hockey shootout mini-game in Unity 6 featuring a human player vs an RL-trained AI goalie using Unity ML-Agents 4.0.
 
@@ -194,9 +194,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 **Support**
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/neural-rink/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/neural-rink/discussions)
-- **Email**: your.email@example.com
+- **Issues**: STILL IN PROGRESS
 
 ---
 
