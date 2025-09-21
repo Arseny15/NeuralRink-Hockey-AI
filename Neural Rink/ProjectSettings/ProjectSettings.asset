@@ -1,0 +1,205 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 24
+  productGUID: a172d204c5414770be0a44d81ad73fe2
+  AndroidProfiler: 0
+  AndroidFilterTouchesWhenObscured: 0
+  AndroidEnableSustainedPerformanceMode: 0
+  defaultScreenOrientation: 3
+  targetDevice: 2
+  useOnDemandResources: 0
+  accelerometerFrequency: 60
+  companyName: Neural Rink
+  productName: Neural Rink
+  defaultCursor: {fileID: 0}
+  cursorHotspot: {x: 0, y: 0}
+  m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
+  m_ShowUnitySplashScreen: 1
+  m_ShowUnitySplashLogo: 1
+  m_SplashScreenOverlayOpacity: 1
+  m_SplashScreenAnimation: 1
+  m_SplashScreenLogoStyle: 1
+  m_SplashScreenDrawMode: 0
+  m_SplashScreenBackgroundAnimationZoom: 1
+  m_SplashScreenLogoAnimationZoom: 1
+  m_SplashScreenBackgroundLandscapeAspectRatio: 2
+  m_SplashScreenBackgroundPortraitAspectRatio: 1
+  m_SplashScreenBackgroundLandscapeUvs:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  m_SplashScreenBackgroundPortraitUvs:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  m_SplashScreenLogos: []
+  m_VirtualRealitySDKs: []
+  m_TargetPixelDensity: 30
+  m_SplashScreenLogos: []
+  m_VirtualRealitySDKs: []
+  m_TargetPixelDensity: 30
+  m_DefaultScreenWidth: 1920
+  m_DefaultScreenHeight: 1080
+  m_DefaultScreenWidthWeb: 960
+  m_DefaultScreenHeightWeb: 600
+  m_RunInBackground: 1
+  m_CaptureSingleScreen: 0
+  m_MuteOtherAudioSources: 0
+  m_Prepare iOS For Recording: 0
+  m_Force iOS Speakers When Recording: 0
+  m_deferSystemGesturesMode: 0
+  m_hideHomeButton: 0
+  m_SubmitAnalytics: 1
+  m_UsePlayerLog: 1
+  m_VirtualRealitySupported: 0
+  m_BuildTargetVREnabled:
+  - Android: 0
+  - Standalone: 0
+  - iPhone: 0
+  - tvOS: 0
+  - WebGL: 0
+  - Windows Store Apps: 0
+  - Tizen: 0
+  - PS4: 0
+  - XboxOne: 0
+  - Nintendo 3DS: 0
+  - Nintendo Switch: 0
+  - Stadia: 0
+  - CloudRendering: 0
+  - GameCoreScarlett: 0
+  - GameCoreXboxOne: 0
+  - PS5: 0
+  - EmbeddedLinux: 0
+  - QNX: 0
+  - VisionOS: 0
+  m_VRConfigTemplate:
+  - Android: {fileID: 0}
+  - Standalone: {fileID: 0}
+  - iPhone: {fileID: 0}
+  - tvOS: {fileID: 0}
+  - WebGL: {fileID: 0}
+  - Windows Store Apps: {fileID: 0}
+  - Tizen: {fileID: 0}
+  - PS4: {fileID: 0}
+  - XboxOne: {fileID: 0}
+  - Nintendo 3DS: {fileID: 0}
+  - Nintendo Switch: {fileID: 0}
+  - Stadia: {fileID: 0}
+  - CloudRendering: {fileID: 0}
+  - GameCoreScarlett: {fileID: 0}
+  - GameCoreXboxOne: {fileID: 0}
+  - PS5: {fileID: 0}
+  - EmbeddedLinux: {fileID: 0}
+  - QNX: {fileID: 0}
+  - VisionOS: {fileID: 0}
+  m_DefaultScreenWidthWeb: 960
+  m_DefaultScreenHeightWeb: 600
+  m_RunInBackground: 1
+  m_CaptureSingleScreen: 0
+  m_MuteOtherAudioSources: 0
+  m_Prepare iOS For Recording: 0
+  m_Force iOS Speakers When Recording: 0
+  m_deferSystemGesturesMode: 0
+  m_hideHomeButton: 0
+  m_SubmitAnalytics: 1
+  m_UsePlayerLog: 1
+  m_VirtualRealitySupported: 0
+  m_BuildTargetVREnabled:
+  - Android: 0
+  - Standalone: 0
+  - iPhone: 0
+  - tvOS: 0
+  - WebGL: 0
+  - Windows Store Apps: 0
+  - Tizen: 0
+  - PS4: 0
+  - XboxOne: 0
+  - Nintendo 3DS: 0
+  - Nintendo Switch: 0
+  - Stadia: 0
+  - CloudRendering: 0
+  - GameCoreScarlett: 0
+  - GameCoreXboxOne: 0
+  - PS5: 0
+  - EmbeddedLinux: 0
+  - QNX: 0
+  - VisionOS: 0
+  m_VRConfigTemplate:
+  - Android: {fileID: 0}
+  - Standalone: {fileID: 0}
+  - iPhone: {fileID: 0}
+  - tvOS: {fileID: 0}
+  - WebGL: {fileID: 0}
+  - Windows Store Apps: {fileID: 0}
+  - Tizen: {fileID: 0}
+  - PS4: {fileID: 0}
+  - XboxOne: {fileID: 0}
+  - Nintendo 3DS: {fileID: 0}
+  - Nintendo Switch: {fileID: 0}
+  - Stadia: {fileID: 0}
+  - CloudRendering: {fileID: 0}
+  - GameCoreScarlett: {fileID: 0}
+  - GameCoreXboxOne: {fileID: 0}
+  - PS5: {fileID: 0}
+  - EmbeddedLinux: {fileID: 0}
+  - QNX: {fileID: 0}
+  - VisionOS: {fileID: 0}
+  m_DefaultScreenWidthWeb: 960
+  m_DefaultScreenHeightWeb: 600
+  m_RunInBackground: 1
+  m_CaptureSingleScreen: 0
+  m_MuteOtherAudioSources: 0
+  m_Prepare iOS For Recording: 0
+  m_Force iOS Speakers When Recording: 0
+  m_deferSystemGesturesMode: 0
+  m_hideHomeButton: 0
+  m_SubmitAnalytics: 1
+  m_UsePlayerLog: 1
+  m_VirtualRealitySupported: 0
+  m_BuildTargetVREnabled:
+  - Android: 0
+  - Standalone: 0
+  - iPhone: 0
+  - tvOS: 0
+  - WebGL: 0
+  - Windows Store Apps: 0
+  - Tizen: 0
+  - PS4: 0
+  - XboxOne: 0
+  - Nintendo 3DS: 0
+  - Nintendo Switch: 0
+  - Stadia: 0
+  - CloudRendering: 0
+  - GameCoreScarlett: 0
+  - GameCoreXboxOne: 0
+  - PS5: 0
+  - EmbeddedLinux: 0
+  - QNX: 0
+  - VisionOS: 0
+  m_VRConfigTemplate:
+  - Android: {fileID: 0}
+  - Standalone: {fileID: 0}
+  - iPhone: {fileID: 0}
+  - tvOS: {fileID: 0}
+  - WebGL: {fileID: 0}
+  - Windows Store Apps: {fileID: 0}
+  - Tizen: {fileID: 0}
+  - PS4: {fileID: 0}
+  - XboxOne: {fileID: 0}
+  - Nintendo 3DS: {fileID: 0}
+  - Nintendo Switch: {fileID: 0}
+  - Stadia: {fileID: 0}
+  - CloudRendering: {fileID: 0}
+  - GameCoreScarlett: {fileID: 0}
+  - GameCoreXboxOne: {fileID: 0}
+  - PS5: {fileID: 0}
+  - EmbeddedLinux: {fileID: 0}
+  - QNX: {fileID: 0}
+  - VisionOS: {fileID: 0}

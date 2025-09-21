@@ -1,0 +1,16 @@
+# Alternative Training Requirements - Python 3.13 Compatible
+# Uses Stable-Baselines3 instead of ML-Agents
+
+# Core ML dependencies
+numpy>=1.21.0,<2.0
+torch>=2.0.0
+tensorboard>=2.10.0
+matplotlib>=3.5.0
+
+# Stable-Baselines3 (alternative to ML-Agents)
+stable-baselines3>=2.0.0
+gymnasium>=0.29.0
+
+# Optional: Additional utilities
+tqdm>=4.64.0
+seaborn>=0.11.0
