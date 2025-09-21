@@ -13,6 +13,8 @@ namespace NeuralRink.Gameplay
         [SerializeField] private float airResistance = 0.99f;
         [SerializeField] private float maxVelocity = 25f;
         [SerializeField] private float bounceDamping = 0.7f;
+        [SerializeField] private bool useAirHockeyPhysics = true;
+        [SerializeField] private float airHockeyFriction = 0.02f; // Very low friction like air hockey
         
         [Header("Goal Detection")]
         [SerializeField] private LayerMask goalLayer = 1;
@@ -81,9 +83,18 @@ namespace NeuralRink.Gameplay
         /// </summary>
         private void ApplyIceFriction()
         {
-            // Apply ice friction (exponential decay)
-            puckRigidbody.linearVelocity *= iceFriction;
-            puckRigidbody.angularVelocity *= iceFriction;
+            if (useAirHockeyPhysics)
+            {
+                // Air hockey style - very low friction, maintains momentum
+                puckRigidbody.linearVelocity *= (1f - airHockeyFriction);
+                puckRigidbody.angularVelocity *= (1f - airHockeyFriction);
+            }
+            else
+            {
+                // Original ice friction (exponential decay)
+                puckRigidbody.linearVelocity *= iceFriction;
+                puckRigidbody.angularVelocity *= iceFriction;
+            }
             
             // Stop very slow movement to prevent infinite sliding
             if (puckRigidbody.linearVelocity.magnitude < 0.1f)
