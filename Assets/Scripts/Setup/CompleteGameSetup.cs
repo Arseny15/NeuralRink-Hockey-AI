@@ -2,10 +2,13 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine.UI;
 using NeuralRink.Gameplay;
 using NeuralRink.Agents;
 using NeuralRink.Systems;
 using NeuralRink.Utils;
+using NeuralRink.UI;
+using NeuralRink.Training;
 using System.IO;
 
 namespace NeuralRink.Setup

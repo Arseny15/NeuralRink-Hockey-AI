@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+using NeuralRink.Gameplay;
 
 namespace NeuralRink.Setup
 {
